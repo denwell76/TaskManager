@@ -33,7 +33,15 @@ public class TaskController {
 
     @GetMapping
     public String listTasks(Model model, Principal principal) {
+        if (principal == null) {
+            throw new IllegalStateException("Käyttäjä ei ole kirjautunut sisään");
+        }
+
         User user = userService.findByUsername(principal.getName());
+        if (user == null) {
+            throw new IllegalStateException("Käyttäjää ei löytynyt");
+        }
+    
         List<Task> tasks = taskService.getTasksForUserSortedByPriority(user);
         model.addAttribute("tasks", tasks);
         return "tasklist";
