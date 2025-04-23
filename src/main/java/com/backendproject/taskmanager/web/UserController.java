@@ -32,23 +32,25 @@ public class UserController {
 
     // Käsittele rekisteröintilomake
     @PostMapping("/register")
-    public String registerUser(@RequestParam String username, @RequestParam String password) {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            // Käyttäjätunnus on jo olemassa
-            return "redirect:/register?error";
+    public String registerUser(@RequestParam String username, @RequestParam String password, Model model) {
+        if (userRepository.findByUsername(username).isPresent()) {
+            model.addAttribute("error", "Käyttäjätunnus on jo käytössä");
+            return "register";
         }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-
+    
+        try {
+            User user = new User();
+            user.setUsername(username);
+            user.setPassword(passwordEncoder.encode(password));
+            userRepository.save(user);
+        } catch (Exception e) {
+            model.addAttribute("error", "Rekisteröinti epäonnistui. Yritä uudelleen.");
+            return "register";
+        }
+    
         return "redirect:/login?registered";
-    }
         
     }
-
+}
     
 
