@@ -3,10 +3,8 @@ package com.backendproject.taskmanager.web;
 import com.backendproject.taskmanager.domain.User;
 import com.backendproject.taskmanager.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -25,18 +23,13 @@ public class UserController {
 
     // Käsittele rekisteröintilomake
     @PostMapping("/register")
-    public String registerUser( User user, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "register";
-        }
+    public String registerUser(User user, Model model) {
         try {
-            userService.registerUser(user);
+            userService.save(user);
+            model.addAttribute("success", "Rekisteröinti onnistui! Voit nyt kirjautua sisään.");
             return "redirect:/login";
-        } catch (DataIntegrityViolationException e) {
-            model.addAttribute("error", "Username already exists");
-            return "register";
-        } catch (Exception e) {
-            model.addAttribute("error", "Registration failed: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
             return "register";
         }
     }

@@ -30,8 +30,5 @@ public class UserService {
                              .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
-    public void registerUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-    }
+    
 }
