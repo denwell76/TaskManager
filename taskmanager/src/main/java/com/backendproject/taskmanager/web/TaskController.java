@@ -31,7 +31,6 @@ public class TaskController {
         this.userService = userService;
     }
 
-    // Näytä kaikki käyttäjän tehtävät prioriteetin mukaan lajiteltuna
     @GetMapping
     public String listTasks(Model model, Principal principal) {
         User user = userService.findByUsername(principal.getName());
@@ -40,7 +39,6 @@ public class TaskController {
         return "tasklist";
     }
 
-    // Näytä lomake uuden tehtävän luomiseksi
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("task", new Task());
@@ -48,7 +46,6 @@ public class TaskController {
         return "addtask";
     }
 
-    // Käsittele uuden tehtävän luominen
     @PostMapping
     public String createTask(@ModelAttribute Task task, Principal principal) {
         User user = userService.findByUsername(principal.getName());
@@ -57,48 +54,39 @@ public class TaskController {
         return "redirect:/tasks";
     }
 
-    // Näytä lomake olemassa olevan tehtävän muokkaamiseksi
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model, Principal principal) {
         Task task = taskService.findById(id);
         User user = userService.findByUsername(principal.getName());
-
-        if (!task.getUser().equals(user)) {
-            return "redirect:/tasks"; // estetään toisen käyttäjän tehtävien muokkaus
+        if (task.getUser() == null || !task.getUser().getId().equals(user.getId())) {
+            return "redirect:/tasks";
         }
-
         model.addAttribute("task", task);
         model.addAttribute("statuses", TaskStatus.values());
         return "edittask";
     }
 
-    // Käsittele muokattu tehtävä
     @PostMapping("/edit/{id}")
     public String updateTask(@PathVariable Long id, @ModelAttribute Task task, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         Task existingTask = taskService.findById(id);
-
-        if (!existingTask.getUser().equals(user)) {
+        if (existingTask.getUser() == null || !existingTask.getUser().getId().equals(user.getId())) {
             return "redirect:/tasks";
         }
-
         task.setId(id);
         task.setUser(user);
         taskService.save(task);
-
         return "redirect:/tasks";
     }
 
-    // Poista tehtävä
     @PostMapping("/delete/{id}")
     public String deleteTask(@PathVariable Long id, Principal principal) {
         Task task = taskService.findById(id);
         User user = userService.findByUsername(principal.getName());
-
-        if (task.getUser().equals(user)) {
-            taskService.deleteById(id);
+        if (task.getUser() == null || !task.getUser().getId().equals(user.getId())) {
+            return "redirect:/tasks";
         }
-
+        taskService.deleteById(id);
         return "redirect:/tasks";
     }
 }

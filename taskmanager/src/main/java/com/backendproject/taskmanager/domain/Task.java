@@ -5,6 +5,8 @@ package com.backendproject.taskmanager.domain;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "tasks")
 public class Task {
@@ -18,6 +20,7 @@ public class Task {
 
     private String description;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate deadline;
 
     private int priority;
