@@ -35,7 +35,7 @@ public class UserController {
     public String registerUser(@RequestParam String username, @RequestParam String password, Model model) {
         if (userRepository.findByUsername(username).isPresent()) {
             model.addAttribute("error", "Käyttäjätunnus on jo käytössä");
-            model.addAttribute("user", new User()); // Lisää tämä
+            model.addAttribute("user", new User()); 
             return "register";
         }
     
@@ -46,7 +46,7 @@ public class UserController {
             userRepository.save(user);
         } catch (Exception e) {
             model.addAttribute("error", "Rekisteröinti epäonnistui. Yritä uudelleen.");
-            model.addAttribute("user", new User()); // Lisää tämä
+            model.addAttribute("user", new User()); 
             return "register";
         }
     
