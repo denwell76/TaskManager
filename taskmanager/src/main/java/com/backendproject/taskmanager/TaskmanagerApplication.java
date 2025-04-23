@@ -13,6 +13,8 @@ import com.backendproject.taskmanager.domain.UserRepository;
 public class TaskmanagerApplication {
 
 	public static void main(String[] args) {
+        String profile = System.getenv("SPRING_PROFILES_ACTIVE") != null ? System.getenv("SPRING_PROFILES_ACTIVE") : "default";
+        System.setProperty("spring.profiles.active", profile);
 		SpringApplication.run(TaskmanagerApplication.class, args);
 	}
 

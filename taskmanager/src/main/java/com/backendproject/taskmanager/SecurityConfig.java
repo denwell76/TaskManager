@@ -26,6 +26,7 @@ public class SecurityConfig {
             .requestMatchers(
                 new AntPathRequestMatcher("/h2-console/**"),
                 new AntPathRequestMatcher("/login"),
+                new AntPathRequestMatcher("/register"),
                 new AntPathRequestMatcher("/css/**"),
                 new AntPathRequestMatcher("/js/**")
                 ).permitAll()
@@ -36,7 +37,9 @@ public class SecurityConfig {
             .loginPage("/login")
             .defaultSuccessUrl("/tasks", true)
             .permitAll()
-        );
+        )
+        .logout(logout -> logout.permitAll());
+
 
     return http.build();
 }
@@ -45,5 +48,6 @@ public class SecurityConfig {
 public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
 }
+
 
 }

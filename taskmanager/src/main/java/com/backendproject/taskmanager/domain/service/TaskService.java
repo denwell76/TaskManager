@@ -1,28 +1,25 @@
 package com.backendproject.taskmanager.domain.service;
 
-
-
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.backendproject.taskmanager.domain.Task;
 import com.backendproject.taskmanager.domain.TaskRepository;
 import com.backendproject.taskmanager.domain.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
+@Transactional
 public class TaskService {
-
-    private final TaskRepository taskRepository;
-
     @Autowired
-    public TaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
+    private TaskRepository taskRepository;
 
-    public List<Task> getTasksForUser(User user) {
-        return taskRepository.findByUser(user);
+    public void save(Task task) {
+        if (task.getDescription() == null) {
+            task.setDescription("");
+        }
+        taskRepository.save(task);
     }
 
     public List<Task> getTasksForUserSortedByPriority(User user) {
@@ -30,11 +27,8 @@ public class TaskService {
     }
 
     public Task findById(Long id) {
-        return taskRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Task not found"));
-    }
-
-    public void save(Task task) {
-        taskRepository.save(task);
+        return taskRepository.findById(id)
+                             .orElseThrow(() -> new IllegalArgumentException("Task not found"));
     }
 
     public void deleteById(Long id) {
