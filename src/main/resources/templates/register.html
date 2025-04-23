@@ -7,6 +7,7 @@
 <body class="bg-light">
     <div class="container mt-5">
         <h1 class="text-center mb-4">Rekisteröidy</h1>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <form th:action="@{/register}" th:object="${user}" method="post" class="card p-4 shadow-sm">
             <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
             <div class="mb-3">
