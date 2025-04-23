@@ -16,6 +16,9 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     public void save(Task task) {
+        if (task.getUser() == null) {
+            throw new IllegalArgumentException("Task must be associated with a user");
+        }
         if (task.getDescription() == null) {
             task.setDescription("");
         }
