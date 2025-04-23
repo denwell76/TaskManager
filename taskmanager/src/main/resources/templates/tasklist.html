@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Tehtävälista</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Tehtäväsi</h1>
+
+        <div class="d-flex justify-content-end mb-3">
+            <a th:href="@{/tasks/new}" class="btn btn-success">➕ Lisää uusi tehtävä</a>
+        </div>
+
+        <table class="table table-striped table-bordered shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tehtävä</th>
+                    <th>Deadline</th>
+                    <th>Prioriteetti</th>
+                    <th>Tila</th>
+                    <th>Toiminnot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="task : ${tasks}" th:if="${task != null}">
+                    <td th:text="${task.title}">Tehtävä</td>
+                    <td th:text="${task.deadline != null} ? ${#temporals.format(task.deadline, 'dd.MM.yyyy')} : '-'">Päivä</td>
+                    <td th:text="${task.priority == 1 ? 'Korkea' : task.priority == 2 ? 'Keskitaso' : task.priority == 3 ? 'Matala' : 'Ei määritelty'}">
+                        Prioriteetti</td>
+                    <td th:text="${task.status != null} ? ${task.status} : '-'">Tila</td>
+                    <td>
+                        <a th:href="@{/tasks/edit/{id}(id=${task.id})}" class="btn btn-primary btn-sm">Muokkaa</a>
+                        <form th:action="@{/tasks/delete/{id}(id=${task.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Haluatko varmasti poistaa tämän tehtävän?')">Poista</button>
+                        </form>
+                        <!-- Lisätietoja-painike, näytetään vain jos kuvaus ei ole null tai tyhjä -->
+                        <button th:if="${task.description != null and not #strings.isEmpty(task.description)}"
+                            class="btn btn-info btn-sm mt-1" type="button" data-bs-toggle="collapse"
+                            th:attr="data-bs-target='#details-' + ${task.id}">
+                            Lisätietoja
+                        </button>
+                    </td>
+                </tr>
+                <!-- Collapsible row for description, inside the same th:each -->
+                <tr th:each="task : ${tasks}"
+                    th:if="${task != null and task.description != null and not #strings.isEmpty(task.description)}"
+                    class="collapse" th:id="'details-' + ${task.id}">
+                    <td colspan="5" class="bg-light">
+                        <strong>Kuvaus:</strong>
+                        <p th:text="${task.description}">Tehtävän kuvaus</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
