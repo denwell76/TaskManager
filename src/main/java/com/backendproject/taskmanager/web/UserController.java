@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
@@ -31,16 +32,17 @@ public class UserController {
 
     // Käsittele rekisteröintilomake
     @PostMapping("/register")
-    public String registerUser(User user, Model model) {
-        if (userRepository.findByUsername(username).isPresent()) {
+    public String registerUser(@RequestParam String username, @RequestParam String password) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             // Käyttäjätunnus on jo olemassa
             return "redirect:/register?error";
         }
 
-        
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
 
         return "redirect:/login?registered";
