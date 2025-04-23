@@ -29,4 +29,9 @@ public class UserService {
         return userRepository.findByUsername(username)
                              .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
+
+    public void registerUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
 }
