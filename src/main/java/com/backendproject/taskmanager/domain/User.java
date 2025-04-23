@@ -1,8 +1,6 @@
 package com.backendproject.taskmanager.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-
 import java.util.List;
 
 @Entity
@@ -10,14 +8,12 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Username cannot be empty")
     @Column(unique = true, nullable = false)
     private String username;
 
-    @NotEmpty(message = "Password cannot be empty")
     @Column(nullable = false)
     private String password;
 
